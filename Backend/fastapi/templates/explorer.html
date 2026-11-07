@@ -315,7 +315,7 @@ const fmtBig = n => { n = +n || 0; if (!n) return '—'; const u = ['B','KB','MB
 const fmtD = v => { if (!v) return ''; const d = new Date(v); if (isNaN(d)) return String(v); const h = d.getHours(); return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()} ${(h % 12) || 12}:${String(d.getMinutes()).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
 const fmtDur = s => { s = Math.max(0, Math.floor(+s || 0)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
 const typeOf = i => i.ext ? ({pdf:'Adobe Acrobat Document',txt:'Text Document',mkv:'MKV Video File',mp4:'MP4 Video File',mp3:'MP3 File',zip:'Compressed (zipped) Folder',jpg:'JPG File',png:'PNG File'}[i.ext] || i.ext.toUpperCase() + ' File') : KNAME[i.kind];
-const tip = i => `${i.name}\nType: ${typeOf(i)}\nSize: ${fmtBig(i.size)}\nDate modified: ${fmtD(i.date)}\nSource channel: ${i.channel}`;
+const tip = i => `${i.name}\nType: ${typeOf(i)}\nSize: ${fmtBig(i.size)}\nDate modified: ${fmtD(i.date)}${i.taken ? `\nDate taken: ${fmtD(i.taken)}` : ''}\nSource channel: ${i.channel}`;
 const dn = i => (S.showExt || !i.ext) ? i.name : i.name.replace(/\.[^.]+$/, '');
 
 /* ---------- theme ---------- */
@@ -575,7 +575,7 @@ function details() {
   if (one.f) { d.innerHTML = `<div class="pv">${FOLDER_IC(64)}</div><h3>${esc(one.name)}</h3><div class="kv"><div>Type</div><div>File folder</div><div>Items</div><div>${one.count}</div></div>`; return; }
   const fp = one.folder_id ? folderPath(one.folder_id).map(f => f.name).join(' › ') : '—';
   d.innerHTML = `<div class="pv">${iconOf(one, 56)}${thumbImg(one)}</div><h3>${esc(one.name)}</h3>
-    <div class="kv"><div>Type</div><div>${esc(typeOf(one))}</div><div>Size</div><div>${fmtBig(one.size)}</div><div>Date modified</div><div>${fmtD(one.date)}</div>${one.duration ? `<div>Length</div><div>${fmtDur(one.duration)}</div>` : ''}${one.width ? `<div>Dimensions</div><div>${one.width} × ${one.height}</div>` : ''}<div>Source channel</div><div>${esc(one.channel)}</div><div>Folder</div><div>${esc(fp)}</div>${one.caption ? `<div>Caption</div><div>${esc(one.caption)}</div>` : ''}</div>`;
+    <div class="kv"><div>Type</div><div>${esc(typeOf(one))}</div><div>Size</div><div>${fmtBig(one.size)}</div><div>Date modified</div><div>${fmtD(one.date)}</div>${one.taken ? `<div>Date taken</div><div>${fmtD(one.taken)}</div>` : ''}${one.duration ? `<div>Length</div><div>${fmtDur(one.duration)}</div>` : ''}${one.width ? `<div>Dimensions</div><div>${one.width} × ${one.height}</div>` : ''}<div>Source channel</div><div>${esc(one.channel)}</div><div>Folder</div><div>${esc(fp)}</div>${one.caption ? `<div>Caption</div><div>${esc(one.caption)}</div>` : ''}</div>`;
 }
 function status() {
   const n = rows().length, files = selFiles(), k = S.sel.size;
